@@ -5,4 +5,13 @@ export interface IEquipment {
   tags: string[];
 }
 
-const equipmentSchema = new Schema({});
+export const equipmentSchema = new Schema<IEquipment>({
+  name: String,
+  tags: [String],
+});
+
+export class CreateEquipmentDto {
+  name: string;
+
+  tags?: string[];
+}
