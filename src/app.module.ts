@@ -7,6 +7,9 @@ import { EquipmentModule } from 'equipment/equipment.module';
 import { AuthModule } from 'auth/auth.module';
 import { DatabaseModule } from 'database/database.module';
 import { JwtModule } from 'jwt/jwt.module';
+import { ExercisesModule } from './exercises/exercises.module';
+import { WorkoutController } from './workout/workout.controller';
+import { WorkoutModule } from './workout/workout.module';
 
 @Module({
   imports: [
@@ -18,8 +21,10 @@ import { JwtModule } from 'jwt/jwt.module';
     AuthModule,
     DatabaseModule,
     JwtModule,
+    ExercisesModule,
+    WorkoutModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, WorkoutController],
   providers: [AppService],
 })
 export class AppModule {}
