@@ -1,1 +1,0 @@
-export const EXERCISE_MODEL = 'EXERCISE_MODEL';

@@ -1,26 +1,23 @@
-import { Module, ModuleMetadata } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { EquipmentService } from './equipment.service';
 import { EquipmentController } from './equipment.controller';
-import { Connection } from 'mongoose';
-import { DATABASE_CONNECTION } from 'database/constants';
-import { EQUIPMENT_MODEL } from 'equipment/constants';
-import { equipmentSchema } from './equipment.model';
-import { DatabaseModule } from 'database/database.module';
 import { AuthModule } from 'auth/auth.module';
-
-export const equipmentProviders: ModuleMetadata['providers'] = [
-  {
-    provide: EQUIPMENT_MODEL,
-    useFactory: (connection: Connection) =>
-      connection.model('Equipment', equipmentSchema),
-    inject: [DATABASE_CONNECTION],
-  },
-];
+import { EquipmentRepository } from 'equipment/equipment.repository';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Equipment, EquipmentSchema } from 'equipment/equipment.model';
 
 @Module({
-  imports: [DatabaseModule, AuthModule],
-  providers: [EquipmentService, ...equipmentProviders],
+  imports: [
+    AuthModule,
+    MongooseModule.forFeature([
+      {
+        name: Equipment.name,
+        schema: EquipmentSchema,
+      },
+    ]),
+  ],
+  providers: [EquipmentRepository, EquipmentService],
   controllers: [EquipmentController],
-  exports: [...equipmentProviders],
+  exports: [EquipmentService],
 })
 export class EquipmentModule {}

@@ -1,1 +1,0 @@
-export const EQUIPMENT_MODEL = 'EQUIPMENT_MODEL';

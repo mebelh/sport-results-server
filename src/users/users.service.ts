@@ -1,12 +1,11 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { IUser } from 'users/users.model';
 import { CreateUserDto } from 'users/dto/create-user.dto';
-import { USER_MODEL } from 'users/constants';
-import { Model } from 'mongoose';
+import { UsersRepository } from 'users/users.repository';
 
 @Injectable()
 export class UsersService {
-  constructor(@Inject(USER_MODEL) private userRepository: Model<IUser>) {}
+  constructor(private userRepository: UsersRepository) {}
 
   async getUserByEmail(email: string): Promise<IUser> {
     return this.userRepository.findOne({
@@ -20,9 +19,7 @@ export class UsersService {
     });
   }
 
-  async createUser(userDto: CreateUserDto): Promise<IUser> {
-    const user = await this.userRepository.create(userDto);
-    await user.save();
-    return user;
+  createUser(userDto: CreateUserDto): Promise<IUser> {
+    return this.userRepository.create(userDto);
   }
 }

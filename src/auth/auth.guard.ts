@@ -5,16 +5,17 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from 'jwt/jwt.service';
-import { Observable } from 'rxjs';
 import { IUser } from 'users/users.model';
+import { UsersService } from 'users/users.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private jwtService: JwtService) {}
+  constructor(
+    private jwtService: JwtService,
+    private userService: UsersService,
+  ) {}
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
 
     try {
@@ -27,7 +28,14 @@ export class AuthGuard implements CanActivate {
         });
       }
 
-      req.user = this.jwtService.decodeToken<IUser>(token);
+      const userWithJwt = this.jwtService.decodeToken<IUser>(token);
+
+      const user = await this.userService.getUserByLogin(userWithJwt.login);
+
+      req.user = {
+        ...userWithJwt,
+        _id: user._id,
+      };
 
       return true;
     } catch (e) {

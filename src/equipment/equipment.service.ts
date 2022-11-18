@@ -1,21 +1,20 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { CreateEquipmentDto, IEquipment } from 'equipment/equipment.model';
-import { EQUIPMENT_MODEL } from 'equipment/constants';
-import { Model } from 'mongoose';
+import { Injectable } from '@nestjs/common';
+import { CreateEquipmentDto, Equipment } from 'equipment/equipment.model';
+import { EquipmentRepository } from 'equipment/equipment.repository';
 
 @Injectable()
 export class EquipmentService {
-  constructor(
-    @Inject(EQUIPMENT_MODEL) private equipmentRepository: Model<IEquipment>,
-  ) {}
+  constructor(private equipmentRepository: EquipmentRepository) {}
 
-  async create(createEquipmentDto: CreateEquipmentDto): Promise<IEquipment> {
-    const equipment = new this.equipmentRepository(createEquipmentDto);
-    await equipment.save();
-    return equipment;
+  async create(createEquipmentDto: CreateEquipmentDto): Promise<Equipment> {
+    return this.equipmentRepository.create(createEquipmentDto);
   }
 
-  getAllEquipment(): Promise<IEquipment[]> {
-    return this.equipmentRepository.find().exec();
+  getAllEquipment(): Promise<Equipment[]> {
+    return this.equipmentRepository.find();
+  }
+
+  findById(id: string): Promise<Equipment> {
+    return this.equipmentRepository.findById(id).exec();
   }
 }

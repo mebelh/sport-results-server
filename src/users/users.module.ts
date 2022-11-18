@@ -1,27 +1,25 @@
-import { forwardRef, Module, ModuleMetadata } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { Connection } from 'mongoose';
-import { userSchema } from 'users/users.model';
-import { USER_MODEL } from 'users/constants';
-import { DATABASE_CONNECTION } from 'database/constants';
-import { DatabaseModule } from 'database/database.module';
 import { AuthModule } from 'auth/auth.module';
 import { JwtModule } from 'jwt/jwt.module';
-
-export const usersProviders: ModuleMetadata['providers'] = [
-  {
-    provide: USER_MODEL,
-    useFactory: (connection: Connection) =>
-      connection.model('User', userSchema),
-    inject: [DATABASE_CONNECTION],
-  },
-];
+import { UsersRepository } from 'users/users.repository';
+import { MongooseModule } from '@nestjs/mongoose';
+import { User, UserSchema } from 'users/users.model';
 
 @Module({
-  imports: [DatabaseModule, forwardRef(() => AuthModule), JwtModule],
+  imports: [
+    AuthModule,
+    JwtModule,
+    MongooseModule.forFeature([
+      {
+        name: User.name,
+        schema: UserSchema,
+      },
+    ]),
+  ],
   controllers: [UsersController],
-  providers: [UsersService, ...usersProviders],
-  exports: [UsersService, ...usersProviders],
+  providers: [UsersService, UsersRepository],
+  exports: [UsersRepository, UsersService],
 })
 export class UsersModule {}

@@ -1,28 +1,36 @@
-import { Schema } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
+import { Exercise } from 'exercises/exercise.model';
+import { User } from 'users/users.model';
 
-export const workoutSchema = new Schema<CreateWorkoutSchema>({
-  description: {
-    type: String,
-    required: false,
-  },
-  exercises: [
-    {
-      ref: 'Exercise',
-      type: Schema.Types.ObjectId,
-    },
-  ],
-  name: {
-    type: String,
-    required: true,
-  },
-});
+@Schema()
+export class Workout {
+  @Prop()
+  description: string;
 
-workoutSchema.set('toJSON', {
-  virtuals: true,
-});
+  @Prop({
+    ref: Exercise.name,
+    type: [Types.ObjectId],
+  })
+  exercises: Exercise[];
 
-export interface CreateWorkoutSchema {
+  @Prop({
+    ref: User.name,
+    type: Types.ObjectId,
+  })
+  user: User;
+
+  @Prop({
+    isRequired: true,
+  })
+  name: string;
+}
+
+export const WorkoutSchema = SchemaFactory.createForClass(Workout);
+
+export class CreateWorkoutDto {
   name: string;
   description: string;
   exercises: string[];
+  user: string;
 }

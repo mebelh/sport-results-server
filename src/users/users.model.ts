@@ -1,32 +1,37 @@
-import mongoose, { Schema } from 'mongoose';
-import { IEquipment } from 'equipment/equipment.model';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
 export interface IUser {
   firstName: string;
   lastName: string;
   login: string;
   password: string;
-  exercises: {
-    date: Date;
-    equipment: IEquipment[];
-  };
+  _id: string;
 }
 
-export const userSchema = new Schema<IUser>({
-  firstName: String,
-  lastName: String,
-  login: String,
-  password: String,
-  exercises: [
-    {
-      date: {
-        type: Date,
-        default: new Date(),
-      },
-      equipment: {
-        type: [mongoose.Types.ObjectId],
-        ref: 'equipment',
-      },
-    },
-  ],
-});
+export type UserDocument = User & Document;
+
+@Schema({
+  toJSON: {
+    virtuals: true,
+  },
+})
+export class User extends Document {
+  @Prop()
+  firstName: string;
+
+  @Prop()
+  lastName: string;
+
+  @Prop()
+  login: string;
+
+  @Prop()
+  password: string;
+}
+
+export const UserSchema = SchemaFactory.createForClass(User);
+
+export interface IRequest {
+  user: IUser;
+}

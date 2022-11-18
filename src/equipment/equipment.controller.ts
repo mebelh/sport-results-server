@@ -6,7 +6,7 @@ import { CreateEquipmentDto } from 'equipment/equipment.model';
 export class EquipmentController {
   constructor(private equipmentService: EquipmentService) {}
 
-  @Get('/all')
+  @Get('/')
   getAllEquipment() {
     return this.equipmentService.getAllEquipment();
   }

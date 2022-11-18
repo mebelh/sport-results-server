@@ -1,23 +1,26 @@
-import mongoose, { Schema } from 'mongoose';
-import { IEquipment } from 'equipment/equipment.model';
+import { Equipment } from 'equipment/equipment.model';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Types } from 'mongoose';
 
-export interface IExercise extends Omit<CreateExerciseDto, 'equipment'> {
-  equipment: IEquipment[];
+@Schema({
+  toJSON: {
+    virtuals: true,
+  },
+})
+export class Exercise extends Document {
+  @Prop({
+    type: [Types.ObjectId],
+    ref: Equipment.name,
+  })
+  equipment: Equipment[];
+
+  @Prop({
+    required: true,
+  })
+  name: string;
 }
 
-export const exerciseSchema = new Schema<CreateExerciseDto>({
-  equipment: [
-    {
-      type: mongoose.Types.ObjectId,
-      ref: 'Equipment',
-    },
-  ],
-  name: String,
-});
-
-exerciseSchema.set('toJSON', {
-  virtuals: true,
-});
+export const ExerciseSchema = SchemaFactory.createForClass(Exercise);
 
 export class CreateExerciseDto {
   name: string;
