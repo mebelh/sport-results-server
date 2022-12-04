@@ -3,7 +3,7 @@ import { ApproachService } from 'approach/approach.service';
 import { FilterQuery } from 'mongoose';
 import { ResultRepository } from 'result/result.repository';
 import { CreateResultDto, Result } from 'result/result.model';
-import { CreateApproachDto } from 'approach/approach.model';
+import { Approach, CreateApproachDto } from 'approach/approach.model';
 
 @Injectable()
 export class ResultService {
@@ -16,18 +16,18 @@ export class ResultService {
     return this.resultRepository.create(createResultDto);
   }
 
-  async addApproach(resultId: string, createApproachDto: CreateApproachDto) {
+  async addApproach(createApproachDto: CreateApproachDto): Promise<Approach> {
     const newApproach = await this.approachService.create(createApproachDto);
 
     const result = await this.resultRepository.findOne({
-      id: resultId,
+      id: createApproachDto.result,
     });
 
     result.approaches.push(newApproach);
 
     await result.save();
 
-    return result;
+    return newApproach;
   }
 
   async find(resultsFilterQuery?: FilterQuery<Result>): Promise<Result[]> {

@@ -14,7 +14,7 @@ export class ApproachRepository {
 
     await newApproach.save();
 
-    return newApproach;
+    return newApproach.populate('exercise');
   }
 
   find(approachFilterQuery: FilterQuery<Approach>) {
