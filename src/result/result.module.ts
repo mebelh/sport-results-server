@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common';
+import { AuthModule } from 'auth/auth.module';
+import { JwtModule } from 'jwt/jwt.module';
+import { UsersModule } from 'users/users.module';
 import { ResultController } from './result.controller';
 import { ResultService } from './result.service';
 import { ApproachService } from 'approach/approach.service';
@@ -11,6 +14,9 @@ import { ResultRepository } from 'result/result.repository';
   controllers: [ResultController],
   providers: [ResultRepository, ResultService, ApproachService],
   imports: [
+    AuthModule,
+    JwtModule,
+    UsersModule,
     ApproachModule,
     MongooseModule.forFeature([
       {

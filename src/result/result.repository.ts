@@ -15,19 +15,23 @@ export class ResultRepository {
       .exec();
   }
 
-  find(resultFilterQuery: FilterQuery<Result>): Promise<Result[]> | null {
+  find(resultFilterQuery?: FilterQuery<Result>): Promise<Result[]> | null {
     return this.resultModel
       .find(resultFilterQuery)
       .populate('exercise')
       .populate('approaches')
+      .populate('user')
       .exec();
   }
 
   async create(createResultDto: CreateResultDto) {
-    const newResult = new this.resultModel(createResultDto);
+    const newResult = new this.resultModel({
+      ...createResultDto,
+      user: createResultDto.userId,
+    });
 
     await newResult.save();
 
-    return newResult;
+    return newResult.populate('user');
   }
 }

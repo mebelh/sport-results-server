@@ -3,7 +3,11 @@ import { Types } from 'mongoose';
 import { Exercise } from 'exercises/exercise.model';
 import { User } from 'users/users.model';
 
-@Schema()
+@Schema({
+  toJSON: {
+    virtuals: true,
+  },
+})
 export class Workout {
   @Prop()
   description: string;

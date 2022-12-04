@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ApproachService } from 'approach/approach.service';
+import { FilterQuery } from 'mongoose';
 import { ResultRepository } from 'result/result.repository';
 import { CreateResultDto, Result } from 'result/result.model';
 import { CreateApproachDto } from 'approach/approach.model';
@@ -27,5 +28,9 @@ export class ResultService {
     await result.save();
 
     return result;
+  }
+
+  async find(resultsFilterQuery?: FilterQuery<Result>): Promise<Result[]> {
+    return this.resultRepository.find(resultsFilterQuery);
   }
 }
