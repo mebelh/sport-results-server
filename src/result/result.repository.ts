@@ -18,8 +18,12 @@ export class ResultRepository {
   find(resultFilterQuery?: FilterQuery<Result>): Promise<Result[]> | null {
     return this.resultModel
       .find(resultFilterQuery)
-      .populate('exercise')
-      .populate('approaches')
+      .populate({
+        path: 'approaches',
+        populate: {
+          path: 'exercise',
+        },
+      })
       .populate('user')
       .exec();
   }
