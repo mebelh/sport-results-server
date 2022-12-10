@@ -7,6 +7,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node-version: [16.x]
+
     steps:
     - name: Deploy using ssh
       uses: appleboy/ssh-action@master
@@ -16,7 +20,7 @@ jobs:
         username: ${{ secrets.USERNAME }}
         port: 80
         script: |
-          cd ~/sport-server
+          cd ./sport-server
           git pull origin master
           npm ci
           npm run build
