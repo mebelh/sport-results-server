@@ -22,7 +22,7 @@ jobs:
         script: |
           cd ./sport-server
           git pull origin master
-          npm ci
+          npm i
           npm run build
           pm2 start npm run start:prod
 
