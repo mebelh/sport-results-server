@@ -18,6 +18,6 @@ jobs:
         script: |
           cd ~/sport-server
           git pull origin master
-          npm ci --only=prod
+          npm ci
           npm run build
           pm2 start npm run start:prod
