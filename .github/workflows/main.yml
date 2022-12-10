@@ -11,13 +11,13 @@ jobs:
     - name: Deploy using ssh
       uses: appleboy/ssh-action@master
       with:
+        key: ${{ secrets.SSH_KEY }}
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.SSH_KEY }}
         port: 80
         script: |
           cd ~/sport-server
           git pull origin master
-          npm i --only=prod
+          npm ci --only=prod
           npm run build
           pm2 start npm run start:prod
