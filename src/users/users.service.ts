@@ -19,6 +19,12 @@ export class UsersService {
     });
   }
 
+  async getUserByPhone(phone): Promise<IUser> {
+    return this.userRepository.findOne({
+      phone,
+    });
+  }
+
   createUser(userDto: CreateUserDto): Promise<IUser> {
     return this.userRepository.create(userDto);
   }

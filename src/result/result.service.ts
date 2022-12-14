@@ -20,7 +20,7 @@ export class ResultService {
     const newApproach = await this.approachService.create(createApproachDto);
 
     const result = await this.resultRepository.findOne({
-      id: createApproachDto.result,
+      _id: createApproachDto.result,
     });
 
     result.approaches.push(newApproach);
@@ -31,6 +31,8 @@ export class ResultService {
   }
 
   async find(resultsFilterQuery?: FilterQuery<Result>): Promise<Result[]> {
-    return this.resultRepository.find(resultsFilterQuery);
+    return this.resultRepository.find(resultsFilterQuery, {
+      date: 'desc',
+    });
   }
 }

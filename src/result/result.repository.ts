@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateResultDto, Result } from 'result/result.model';
-import { FilterQuery, Model } from 'mongoose';
+import { FilterQuery, Model, SortOrder } from 'mongoose';
 
 @Injectable()
 export class ResultRepository {
@@ -15,7 +15,10 @@ export class ResultRepository {
       .exec();
   }
 
-  find(resultFilterQuery?: FilterQuery<Result>): Promise<Result[]> | null {
+  find(
+    resultFilterQuery?: FilterQuery<Result>,
+    sort?: Partial<Record<keyof Result, SortOrder>>,
+  ): Promise<Result[]> | null {
     return this.resultModel
       .find(resultFilterQuery)
       .populate({
@@ -24,6 +27,7 @@ export class ResultRepository {
           path: 'exercise',
         },
       })
+      .sort(sort)
       .populate('user')
       .exec();
   }

@@ -17,17 +17,20 @@ export type UserDocument = User & Document;
   },
 })
 export class User extends Document {
-  @Prop()
+  @Prop(String)
   firstName: string;
 
-  @Prop()
+  @Prop(String)
   lastName: string;
 
-  @Prop()
+  @Prop(String)
   login: string;
 
-  @Prop()
+  @Prop(String)
   password: string;
+
+  @Prop(String)
+  phone: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -1,5 +1,12 @@
 export class CreateUserDto {
-  readonly login: string;
+  phone: string;
+}
 
-  readonly password: string;
+export class SendAuthCodeDto {
+  phone: string;
+}
+
+export class AuthUserDto {
+  phone: string;
+  code: string;
 }

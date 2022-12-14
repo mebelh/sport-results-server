@@ -23,5 +23,6 @@ jobs:
           cd ./sport-server
           git pull origin master
           npm i
+          rm -rf ./dist
           npm run build
           pm2 restart main

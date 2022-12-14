@@ -1,64 +1,76 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { CreateUserDto } from 'users/dto/create-user.dto';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { AuthCode } from 'auth/authCode.model';
+import { Model } from 'mongoose';
+import { AuthUserDto, SendAuthCodeDto } from 'users/dto/create-user.dto';
 import { UsersService } from 'users/users.service';
-import * as bcrypt from 'bcryptjs';
 import { JwtService } from 'jwt/jwt.service';
+import fetch from 'cross-fetch';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UsersService,
     private jwtService: JwtService,
+    @InjectModel(AuthCode.name)
+    private readonly authCodeModel: Model<AuthCode>,
   ) {}
 
-  async login(userDto: CreateUserDto) {
-    const user = await this.validateUser(userDto);
+  async login(userDto: AuthUserDto) {
+    const { code } = await this.authCodeModel
+      .findOne({
+        phone: userDto.phone,
+      })
+      .exec();
+
+    if (code !== userDto.code) {
+      throw new UnauthorizedException('Неверный код!');
+    }
+
+    let user = await this.userService.getUserByPhone(userDto.phone);
+
+    if (!user) {
+      user = await this.userService.createUser(userDto);
+    }
 
     return {
       user,
       token: this.jwtService.generateToken({
-        login: user.login,
+        userId: user._id,
       }),
     };
   }
 
-  async register(userDto: CreateUserDto) {
-    const candidate = await this.userService.getUserByLogin(userDto.login);
+  async sendAuthCode({ phone }: SendAuthCodeDto): Promise<string> {
+    const response = await fetch(
+      `https://sms.ru/code/call?phone=${phone}}&api_id=9BF9CE23-8547-A80B-FAA7-67AB5661394E`,
+      {
+        method: 'POST',
+      },
+    ).then((res) => res.json());
 
-    if (candidate) {
-      throw new HttpException(
-        'Пользователь с таким логином уже существует',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    const user = await this.userService.createUser({
-      login: userDto.login,
-      password: await bcrypt.hash(userDto.password, 5),
+    const oldCode = await this.authCodeModel.findOne({
+      phone,
     });
 
-    return {
-      user,
-      token: this.jwtService.generateToken({
-        login: user.login,
-      }),
-    };
-  }
+    console.log(response);
 
-  async validateUser(userDto: CreateUserDto) {
-    const user = await this.userService.getUserByLogin(userDto.login);
-    if (!user) {
-      throw new UnauthorizedException('Неправильный логин или пароль');
+    const code: string = response.code;
+
+    if (oldCode) {
+      oldCode.update({
+        code,
+      });
+      await oldCode.save();
+    } else {
+      const newCode = new this.authCodeModel({
+        code,
+        phone,
+      });
+
+      await newCode.save();
     }
-    const areSame = await bcrypt.compare(userDto.password, user.password);
-    if (areSame && user) {
-      return user;
-    }
-    throw new UnauthorizedException('Неправильный логин или пароль');
+
+    return code;
   }
 }

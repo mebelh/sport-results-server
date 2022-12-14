@@ -5,6 +5,7 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "type": "commonjs",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
@@ -29,7 +30,9 @@
     "@nestjs/platform-express": "^9.0.0",
     "@types/bcryptjs": "^2.4.2",
     "bcryptjs": "^2.4.3",
+    "cross-fetch": "^3.1.5",
     "mongoose": "^6.5.0",
+    "node-fetch": "^3.3.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0"
