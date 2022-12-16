@@ -53,15 +53,12 @@ export class AuthService {
       phone,
     });
 
-    console.log(response);
-
     const code: string = response.code;
 
     if (oldCode) {
-      oldCode.update({
+      await oldCode.update({
         code,
       });
-      await oldCode.save();
     } else {
       const newCode = new this.authCodeModel({
         code,
