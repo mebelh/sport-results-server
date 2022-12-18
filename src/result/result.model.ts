@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Document, Types, Date } from 'mongoose';
 import { Approach } from 'approach/approach.model';
 import { User } from 'users/users.model';
 import { Workout } from 'workout/workout.model';
@@ -29,8 +29,8 @@ export class Result extends Document {
   user: User;
 
   @Prop({
-    type: String,
-    default: new Date().toISOString(),
+    type: Date,
+    default: Date.now,
   })
   date: string;
 }
