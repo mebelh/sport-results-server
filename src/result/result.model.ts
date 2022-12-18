@@ -14,7 +14,7 @@ export class Result extends Document {
     ref: Workout.name,
     type: Types.ObjectId,
   })
-  exercise: Workout;
+  workout: Workout;
 
   @Prop({
     ref: Approach.name,

@@ -11,8 +11,6 @@ export class WorkoutController {
   @Get('/')
   @UseGuards(AuthGuard)
   async getWorkout(@Req() req: IRequest): Promise<Workout[]> {
-    console.log(req.user);
-
     return this.workoutService.find({
       user: req.user._id,
     });

@@ -10,7 +10,7 @@ export class ResultRepository {
   findOne(resultFilterQuery: FilterQuery<Result>): Promise<Result> | null {
     return this.resultModel
       .findOne(resultFilterQuery)
-      .populate('exercise')
+      .populate('workout')
       .populate('approaches')
       .exec();
   }
@@ -29,17 +29,18 @@ export class ResultRepository {
       })
       .sort(sort)
       .populate('user')
+      .populate('workout')
       .exec();
   }
 
   async create(createResultDto: CreateResultDto) {
     const newResult = new this.resultModel({
-      ...createResultDto,
+      workout: createResultDto.workoutId,
       user: createResultDto.userId,
     });
 
     await newResult.save();
 
-    return newResult.populate('user');
+    return newResult.populate('workout');
   }
 }
