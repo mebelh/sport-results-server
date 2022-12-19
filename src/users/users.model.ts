@@ -7,6 +7,7 @@ export interface IUser {
   login: string;
   password: string;
   _id: string;
+  phone: string;
 }
 
 export type UserDocument = User & Document;

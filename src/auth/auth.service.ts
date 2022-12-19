@@ -37,6 +37,7 @@ export class AuthService {
       user,
       token: this.jwtService.generateToken({
         userId: user._id,
+        phone: userDto.phone,
       }),
     };
   }

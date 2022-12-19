@@ -30,7 +30,7 @@ export class AuthGuard implements CanActivate {
 
       const userWithJwt = this.jwtService.decodeToken<IUser>(token);
 
-      const user = await this.userService.getUserByLogin(userWithJwt.login);
+      const user = await this.userService.getUserByPhone(userWithJwt.phone);
 
       req.user = {
         ...userWithJwt,
